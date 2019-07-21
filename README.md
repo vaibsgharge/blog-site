@@ -2,27 +2,11 @@
 
 Typography driven, focus on the content & minimal style. Powered by MDX.
 
-[Demo Website](https://minimal-blog.lekoarts.de)
-
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/LekoArts/gatsby-starter-minimal-blog) [![Edit gatsby-starter-minimal-blog](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/LekoArts/gatsby-starter-minimal-blog/tree/master/)
-
-[![CircleCI](https://circleci.com/gh/LekoArts/gatsby-starter-minimal-blog.svg?style=svg)](https://circleci.com/gh/LekoArts/gatsby-starter-minimal-blog) [![Netlify Status](https://api.netlify.com/api/v1/badges/f466015c-14f4-440d-a92b-0b0e30de609a/deploy-status)](https://app.netlify.com/sites/minimal-blog/deploys)
 
 ## About Me
 
 I hope you like my starters and create something awesome! To see some of my work you can visit my [website](https://www.lekoarts.de) or support me on [Patreon](https://www.patreon.com/lekoarts) to get some neat rewards (4K images, project files, tutorial insights). Every pledge on Patreon helps me creating more free starters!
-
-Also check out the other _gatsby-starters_:
-
-- [gatsby-starter-portfolio-emma](https://github.com/LekoArts/gatsby-starter-portfolio-emma)
-- [gatsby-starter-portfolio-emilia](https://github.com/LekoArts/gatsby-starter-portfolio-emilia)
-- [gatsby-starter-portfolio-bella](https://github.com/LekoArts/gatsby-starter-portfolio-bella)
-- [gatsby-starter-portfolio-cara](https://github.com/LekoArts/gatsby-starter-portfolio-cara)
-- [gatsby-starter-portfolio-jodie](https://github.com/LekoArts/gatsby-starter-portfolio-jodie)
-- [gatsby-starter-prismic](https://github.com/LekoArts/gatsby-starter-prismic)
-- [gatsby-starter-prismic-i18n](https://github.com/LekoArts/gatsby-starter-prismic-i18n)
-
-Check out the [Gatsby Starter Portfolio Overview](https://gatsby-starter-portfolio.netlify.com/)!
 
 ## Features
 
