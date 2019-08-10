@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link, graphql } from 'gatsby'
+import { graphql } from 'gatsby'
 import styled from 'styled-components'
 
-import { Layout, Article, Wrapper, Button, SectionTitle, BlogHeroIcon } from '../components'
+import { Layout, Article, Wrapper, SectionTitle, PortfolioIcon } from '../components'
 
 const Content = styled.div`
   grid-column: 2;
@@ -39,6 +39,27 @@ const Hero = styled.div`
       font-size: 1.25rem;
     }
   }
+
+  h5 {
+    margin: auto;
+    text-align: left;
+    font-size: 1.1rem;
+  }
+`
+const NavContainer = styled.header`
+  padding: 0px 20px;
+  width: 100%;
+  position: absolute;
+  width: 100%;
+  float: left;
+  left: 1300px;
+  top: 20px;
+  &:hover,
+  &:focus {
+    svg {
+      transform: scale(1.2);
+    }
+  }
 `
 
 const IndexPage = ({
@@ -47,18 +68,24 @@ const IndexPage = ({
   },
 }) => (
   <Layout>
+    <NavContainer>
+      <PortfolioIcon />
+    </NavContainer>
     <Wrapper>
       <Hero>
-        <h1>Hello, I'm Vaibhav 👋</h1>
-        <p>Personal blog by Vaibhav Gharge.</p>
+        <h1>Hello World, I'm Vaibhav 👋</h1>
         <br />
         <p>
-          I&apos;m a Senior Software Engineer based in Singapore who enjoys building things that live on the internet.
+          A Senior Software Engineer at Accenture, Singapore with over 5 years of hands-on experience in creating and
+          maintaining software.
         </p>
-        {/* <a href="http://localhost:8002/">
-          <Button big> Find out more </Button>
-        </a> */}
-        <BlogHeroIcon /> <br />
+        <br />
+        <p>
+          I am passionate about Java, Reactive Programming and Microservices and Cloud Technologies. You'll find me
+          always learning/exploring new things, and then writing about it.
+        </p>
+        <br />
+        <h5>“Live as if you were to die tomorrow. Learn as if you were to live forever.” - Mahatma Gandhi</h5>
       </Hero>
       <Content>
         <SectionTitle>Latest stories</SectionTitle>

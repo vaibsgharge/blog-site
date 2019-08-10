@@ -2,12 +2,11 @@ import React from 'react'
 
 const BlogHeroIcon = () => (
   <svg
-    id="98b38715-c4ac-41e9-8897-c725e8bf1e12"
-    data-name="Layer 1"
+    id="blogHero"
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
-    width="100%"
-    height="auto"
+    width="800px"
+    height="800px"
     viewBox="0 0 1046.26 851.78"
   >
     <defs>

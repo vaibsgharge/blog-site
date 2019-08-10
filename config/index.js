@@ -12,8 +12,6 @@ module.exports = {
   siteDescription: 'Software Engineering Blog by Vaibhav Gharge.', // Your site description
   author: 'Vaibhav Gharge', // Author for schemaORGJSONLD
   siteLogo: '/social/logo.png', // Image for schemaORGJSONLD
-
-  // siteFBAppID: '123456789', // Facebook App ID - Optional
   userTwitter: '@VaibSGharge', // Twitter Username - Optional
   ogSiteName: 'VaibSGharge', // Facebook Site Name - Optional
   ogLanguage: 'en_US', // Facebook Language

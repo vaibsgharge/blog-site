@@ -8,6 +8,20 @@ import SEO from './SEO'
 import Subline from './Subline'
 import Wrapper from './Wrapper'
 import NewsLetterIcon from './icons/newsletter'
+import PortfolioIcon from './icons/portfolio'
 import BlogHeroIcon from './icons/bloghero'
 
-export { Article, Button, Header, Layout, PrevNext, SectionTitle, SEO, Subline, Wrapper, NewsLetterIcon, BlogHeroIcon }
+export {
+  Article,
+  Button,
+  Header,
+  Layout,
+  PrevNext,
+  SectionTitle,
+  SEO,
+  Subline,
+  Wrapper,
+  NewsLetterIcon,
+  BlogHeroIcon,
+  PortfolioIcon,
+}
