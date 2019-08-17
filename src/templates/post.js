@@ -40,6 +40,12 @@ const Content = styled.article`
     margin-bottom: 1rem;
     font-size: 16px;
   }
+  .gatsby-resp-image-background-image {
+    display: none !important;
+  }
+  .gatsby-resp-image-image {
+    max-width: 100% !important;
+  }
 `
 
 const Title = styled.h1`

@@ -45,28 +45,23 @@ const Excerpt = styled.p`
   margin-bottom: 1rem;
 `
 
-const Article = ({ title, date, excerpt, slug, timeToRead, categories }) => {
-  const firstChar = title.charAt(0)
-
-  return (
-    <Post>
-      <Title>
-        <Initiale>{firstChar}</Initiale>
-        <Link to={slug}>{title}</Link>
-      </Title>
-      <Subline>
-        {date} &mdash; {timeToRead} Min Read &mdash; In{' '}
-        {categories.map((cat, i) => (
-          <React.Fragment key={cat}>
-            {!!i && ', '}
-            <Link to={`/categories/${kebabCase(cat)}`}>{cat}</Link>
-          </React.Fragment>
-        ))}
-      </Subline>
-      <Excerpt>{excerpt}</Excerpt>
-    </Post>
-  )
-}
+const Article = ({ title, date, excerpt, slug, timeToRead, categories }) => (
+  <Post>
+    <Title>
+      <Link to={slug}>{title}</Link>
+    </Title>
+    <Subline>
+      {date} &mdash; {timeToRead} Min Read &mdash; In{' '}
+      {categories.map((cat, i) => (
+        <React.Fragment key={cat}>
+          {!!i && ', '}
+          <Link to={`/categories/${kebabCase(cat)}`}>{cat}</Link>
+        </React.Fragment>
+      ))}
+    </Subline>
+    <Excerpt>{excerpt}</Excerpt>
+  </Post>
+)
 
 export default Article
 

@@ -1,0 +1,156 @@
+---
+date: "2019-08-11"
+title: "Understanding the Eight Fallacies of Distributed Systems"
+categories:
+  - Distributed Systems
+---
+![Understanding the Eight Fallacies of Distributed Systems](./distributed_system_1.jpg)
+
+The software industry has been writing distributed systems for several decades. In 1969, the U.S. Department of Defense created ARPANET, the precursor to today’s internet. Around the same time, the SWIFT protocol was established. 
+
+SWIFT is a vast messaging network used by banks and other financial institutions to quickly, accurately, and securely send and receive information, such as money transfer instructions.
+
+Nevertheless, In 1994, Peter Deutsch, a sun fellow at the time, drafted 7 assumptions architects and designers of distributed systems are likely to make, which prove wrong in the long run ­ resulting in all sorts of troubles and pains for the solution and architects who made the assumptions.
+
+In 1997 James Gosling added another such fallacy. These assumptions are now collectively known as the **“The Eight Fallacies of Distributed Computing”** :
+
+1. The network is reliable.
+1. Latency is zero.
+1. Bandwidth is infinite.
+1. The network is secure.
+1. Topology doesn't change.
+1. There is one administrator.
+1. Transport cost is zero.
+1. The network is homogeneous.
+
+The goal of this article is to define and clarify the different aspects of **“Fallacies of Distributed Computing”**.
+
+Lets take a closer look at each of these fallacies, explains them and checks their relevancy for distributed systems today.
+
+
+### 1. The network is reliable
+
+  - When was the last time you saw a switch fail? After all, even basic switches these days have MTBFs (Mean Time Between Failure) in the 50,000 operating hours and more.
+
+  - If your application is a mission critical 365 x 7 kind of application, you will hit that failure--and Murphy will make sure it happens in the most inappropriate moment.
+
+You might aruge that, most applications are not like that. So what's the problem?
+
+  - Well, there are plenty of problems: Power failures, someone trips on the network cord, all of a sudden clients connect wirelessly, and so on. If hardware isn't enough to make your system go haywire--the software can fail as well, and it does.
+
+  - The situation may even be overwhelming, if you collaborate with an external partner, such as an e-commerce application working with an external credit-card processing service. Their side of the connection is not under your direct control and failture on their side makes your application unusable.
+
+Lastly there are security threats like DDOS attacks and the like.
+
+#### So how to handle such situations?
+
+> On the infrastructure side, you need to think about hardware and software redundancy and weigh the risks of failure versus the required investment. 
+
+> On the software side, you need to think about messages/calls getting lost whenever you send a message/make a call over the wire. Using circuit breaker pattern while developing, gives the failing side some time to breath and recover.
+
+**To sum up, the network is Unreliable and we as software architect/designers/developers need to address that.**
+
+
+### 2. Latency is zero
+
+> Latency is nothing but how much time it takes for data to move from one place to another (versus bandwidth which is how much data we can transfer during that time).
+
+Latency can be relatively good on a LAN--but latency deteriorates quickly when you move to WAN scenarios or internet scenarios.
+
+Latency is more problematic than bandwidth. Here's a quote from a post by Ingo Rammer on latency vs. Bandwidth that illustrates this: 
+
+> "But I think that it’s really interesting to see that the end-to-end bandwidth increased by 1468 times within the last 11 years while the latency (the time a single ping takes) has only been improved tenfold. If this wouldn’t be enough, there is even a natural cap on latency. The minimum round-trip time between two points of this earth is determined by the maximum speed of information transmission: the speed of light. At roughly 300,000 kilometers per second (3.6 * 10E12 teraangstrom per fortnight), it will always take at least 30 milliseconds to send a ping from Europe to the US and back, even if the processing would be done in real time."
+
+#### So what can be done in such scenarios?
+
+  - Taking latency into consideration means you should strive to make as few as possible calls and assuming you have enough bandwidth. For example, The AJAX/Asynchronous approach allows for using the dead time the users spend digesting data to retrieve more data - however, you still need to consider latency.
+
+  - Making correct design decisions, regarding the data availability. Can your application take data from the end of the day Batch Process avoiding network calls for real time data needs? 
+
+  - These design chocies makes a huge impact on the overall user experience of your application.
+
+
+### 3. Bandwidth is infinite
+
+This fallacy, in my opinion, is not as strong as the others. If there is one thing that is constantly getting better in relation to networks it is bandwidth.
+
+However, there are two forces at work to keep this assumption a fallacy. 
+
+1. One is that while the bandwidth grows, so does the amount of information we try to squeeze through it. VoIP, videos, and IPTV are some of the newer applications that take up bandwidth. Downloads, richer UIs, big javascript bundles and reliance on verbose formats (XML) are also at work--especially if you are using lower lines.
+
+2. The other force at work to lower bandwidth is packet loss. In the local area network or intranet environment, packet loss usually small enough. 
+On the other hand In the WAN however, packet loss are often rather large and something that the end systems can not control. In streaming media and online game applications, packet loss can affect a user's quality of experience (QoE) drastically.
+
+The main implication then is to consider that in the production environment of our application there may be bandwidth problems which are beyond our control. And we should bear in mind how much data is expected to travel over the wire.
+
+
+### 4. The network is secure
+
+  - Statistics published at Aladdin.com shows that: "For 52% of the networks the perimeter is the only defense". According to Preventsys and Qualys, 52% of chief information security officers acknowledged having a "Moat & Castle" approach to their overall network security . They admitted that once the perimeter security is penetrated, their networks are at risk.
+
+  - Aladdin also claims that the costs of Malware for 2004 (Viruses, Worms, Trojans etc.) are estimated between $169 billion and $204 billion. The implications of network (in) security are obvious--you need to build security into your solutions from Day 1.
+
+> Security is a system quality attribute that needs to be taken into consideration starting from the architectural level. Security is usually a multi-layered solution that is handled on the network, infrastructure, and application levels.
+
+
+### 5. Topology doesn't change
+
+  - The fifth Distributed Computing Fallacy is about network topology. "Topology doesn't change." That's right, it doesn’t--as long as it stays in the test lab.
+
+  - When you deploy an application in the wild (that is, to an organization), the network topology is usually out of your control. The operations team (IT) 
+is likely to add and remove servers every once in a while and/or make other changes to the network.
+
+  - When you're talking about clients, the situation is even worse. There are laptops coming and going, wireless ad-hoc networks , new mobile devices. In short, topology is changing **constantly**.
+
+  - What does this mean for the applications we develope? Simple. Do not to depend on specific endpoints or routes, if you can't be prepared to renegotiate endpoints. Or provide discovery services which allows to abstract the physical structure of the network and handle it gracefully. 
+
+  - The most obvious example for this is **DNS** names instead of IP addresses. For example, If you move your blogging site from one hosting service to another. The transfer will go through without a hitch, because when the DNS routing tables are updated (it takes a day or two to the change to ripple) readers will be directed to the new site without knowing the routing (topology) has changed under their feet.
+
+### 6. There is one administrator
+
+  - The IT group usually has different administrators, assigned according to expertise--databases, web servers, networks, Linux, Windows, Main Frame and the like. This is the easy situation.
+
+  - The problem occurs when your company collaborates with external entities (for example, connecting with a business partner), or if your application is deployed for Internet consumption and hosted by some hosting service and the application consumes external services. In these situations, the other administrators are not even under your control and they may have their own agendas/rules.
+
+  - Well, as long as everything works, you may not care. You do care, however, when things go astray and there is a need to pinpoint a problem (and solve it). Furthermore, you need to understand that the administrators will most likely not be part of your development team so we need provide them with tools to diagnose 
+and find problems.
+
+  - To sum up, when there is more than one administrator, you need to remember that administrators can constrain your options (administrators that sets limited privileges, limited ports and protocols and so on), and that you need to help them manage your applications.
+
+### 7. Transport cost is zero
+
+There are a couple of ways you can interpret this statement, both of which are false assumptions.
+
+1. One way is that going from the application level to the transport level is free. This is a fallacy since we have to do marshaling (serialize information into bits) to get data unto the wire, which takes both computer resources and adds to the latency.
+
+1. The second way to interpret the statement is that the costs (as in cash money) for setting and running the network are free. This is also far from being true. There are costs--costs for buying the routers, costs for securing the network, costs for leasing the bandwidth for internet connections, and costs for operating 
+and maintaining the network running. Someone, somewhere will have to pick the tab and pay these costs.
+
+
+### 8. The network is homogeneous
+
+  - The eighth and final Distributed Computing fallacy is "The network is homogeneous", which was added by James Gosling six years later (in 1997). Any network, except maybe the very trivial ones, are not homogeneous. Heck, even my home network has a Linux based HTPC, a couple of Windows based PCs, and a Android Mobile--all connected by a wireless network.
+
+  - Even if you managed to maintain your internal network homogeneous, you will hit this problem when you would try to cooperate with a partner or a supplier.
+
+  - It is worthwhile to pay attention to the fact the network is not homogeneous at the application level. The implication of this is that you have to assume interoperability will be needed sooner or later and be ready to support it from day one.
+
+  - Do not rely on proprietary protocols--it would be harder to integrate them later. Do use standard technologies that are widely accepted; the most notable examples being XML or Web Services.
+
+### Conclusions
+
+  - Even today, the breakdown or ‘outage’ of a cloud service happens surprisingly frequently. When you are planning or developing a distributed application, it is a bad idea to assume attributes and qualities in your network that aren’t necessarily there: far better to plan on the assumption that your network will be costly, and will occasionally be unreliable and insecure.
+  - Remember that (successful) applications evolve and grow so even if things look Ok for a while if you don't pay attention to the issues covered by the fallacies they will rear their ugly head and bite you.
+  - I hope that reading this article both helped explain what the fallacies mean as well as provide some guidance on what to do to avoid their implications.
+  
+  
+Hope you find this article useful. Please share your thoughts in the comment section.
+
+I’d be happy to talk! If you liked this post, please share, comment and give few 👏 😊 Cheers. See you next time.
+
+
+##### References
+  - [Britton2001] IT Architecture & Middleware, C. Britton, Addison-Wesley 2001, ISBN 0-201-70907-4 [JDJ2004]. http://java.sys-con.com/read/38665.htm
+  - [Gosling] http://blogs.sun.com/roller/page/jag
+  - [Ingo] http://blogs.thinktecture.com/ingo/archive/2005/11/08/LatencyVsBandwidth.aspx
+  - [RichUI] http://richui.blogspot.com/2005/09/ajax-latency-problems-myth-or-reality.html

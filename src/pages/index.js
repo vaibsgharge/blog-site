@@ -73,7 +73,7 @@ const IndexPage = ({
     </NavContainer>
     <Wrapper>
       <Hero>
-        <h1>Hello World, I'm Vaibhav 👋</h1>
+        <h1>Hello, I'm Vaibhav 👋</h1>
         <br />
         <p>
           A Senior Software Engineer at Accenture, Singapore with over 5 years of hands-on experience in creating and
