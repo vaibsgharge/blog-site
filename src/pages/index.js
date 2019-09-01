@@ -41,8 +41,9 @@ const Hero = styled.div`
   }
 
   h5 {
-    margin: auto;
+    margin-bottom: -1.5rem;
     text-align: left;
+    width: max-content;
     font-size: 1.1rem;
   }
 `
@@ -76,19 +77,15 @@ const IndexPage = ({
         <h1>Hello, I'm Vaibhav 👋</h1>
         <br />
         <p>
-          A Senior Software Engineer at Accenture, Singapore with over 5 years of hands-on experience in creating and
-          maintaining software.
+          A Senior Software Engineer at Accenture, Singapore. I am passionate about Java, Reactive Programming,
+          Microservices and Cloud Technologies.
         </p>
         <br />
-        <p>
-          I am passionate about Java, Reactive Programming and Microservices and Cloud Technologies. You'll find me
-          always learning/exploring new things, and then writing about it.
-        </p>
-        <br />
+        <p>You'll always find me learning/exploring new things, and then writing about it.</p>
         <h5>“Live as if you were to die tomorrow. Learn as if you were to live forever.” - Mahatma Gandhi</h5>
       </Hero>
       <Content>
-        <SectionTitle>Latest stories</SectionTitle>
+        <SectionTitle>Latest Articles</SectionTitle>
         {posts.map(post => (
           <Article
             title={post.frontmatter.title}

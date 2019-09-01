@@ -9,7 +9,7 @@ const PortfolioIcon = () => (
     viewBox="0 0 264 280"
     version="1.1"
   >
-    <a href="https://thirsty-shannon-1dc0e0.netlify.com/" target="_blank" rel="nofollow noopener noreferrer">
+    <a href="https://vaibhavgharge.com/" target="_blank" rel="nofollow noopener noreferrer">
       <defs>
         <circle id="path-1" cx="120" cy="120" r="120" />
         <path
