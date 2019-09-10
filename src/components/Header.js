@@ -17,12 +17,15 @@ const Wrapper = styled.header`
 `
 
 const Content = styled.div`
-  max-width: ${props => props.theme.maxWidth};
-  margin: 0 auto;
+  max-width: 70%;
+  margin-left: 6rem;
+  margin-right: 1rem;
+  text-align: left;
 
   a {
     color: ${props => props.theme.colors.white};
-    font-size: 1.2rem;
+    font-family: ${props => props.theme.fontFamily.serif};
+    font-size: 1.5rem;
     &:hover {
       opacity: 0.85;
       color: ${props => props.theme.colors.white};

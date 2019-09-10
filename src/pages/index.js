@@ -21,8 +21,8 @@ const Content = styled.div`
 
 const Hero = styled.div`
   grid-column: 2;
-  padding: 3rem 2rem 6rem 2rem;
-  text-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  padding: 3rem 2rem 4rem 2rem;
+  text-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
   color: ${props => props.theme.colors.grey.dark};
 
   @media (max-width: ${props => props.theme.breakpoints.phone}) {
@@ -63,6 +63,11 @@ const NavContainer = styled.header`
   }
 `
 
+const SiteTitle = styled.h1`
+  color: ${props => props.theme.colors.grey.dark};
+  font-family: ${props => props.theme.fontFamily.serif};
+`
+
 const IndexPage = ({
   data: {
     allMdx: { nodes: posts },
@@ -74,18 +79,10 @@ const IndexPage = ({
     </NavContainer>
     <Wrapper>
       <Hero>
-        <h1>Hello, I'm Vaibhav 👋</h1>
-        <br />
-        <p>
-          A Senior Software Engineer at Accenture, Singapore. I am passionate about Java, Reactive Programming,
-          Microservices and Cloud Technologies.
-        </p>
-        <br />
-        <p>You'll always find me learning/exploring new things, and then writing about it.</p>
-        <h5>“Live as if you were to die tomorrow. Learn as if you were to live forever.” - Mahatma Gandhi</h5>
+        <SiteTitle>Great Architectures, Stacks & Software Craftsmanship at Webscale.</SiteTitle>
       </Hero>
       <Content>
-        <SectionTitle>Latest Articles</SectionTitle>
+        <SectionTitle>What's New?</SectionTitle>
         {posts.map(post => (
           <Article
             title={post.frontmatter.title}
