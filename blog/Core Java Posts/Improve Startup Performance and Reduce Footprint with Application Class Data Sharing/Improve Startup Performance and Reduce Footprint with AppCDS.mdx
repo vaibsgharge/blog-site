@@ -1,0 +1,163 @@
+---
+date: "2019-07-01"
+title: "Improve Startup Performance and Reduce Footprint with Application Class Data Sharing"
+categories:
+  - Java
+---
+
+In today's cloud environment you pay for what you consume the cost is determined by the CPU memory and storage consumptions. So how do you achieve cost savings when deploy Java applications into the cloud?
+
+The solution is to reduces both the runtime memory footprint and the start time for your java applications. The goal of this article is to define and clarify the different aspects of **“Class Data Sharing in Java”**.
+
+Lets take a closer look at,
+  - **What and Why of Class Data Sharing**
+  - **Creating a shared archive with CDS**
+  - **Introduction to AppCDS**
+  - **Generating and using a shared application archive file**
+  - **Parting Thoughts**
+
+### What and Why of Class Data Sharing?
+
+> The class sharing feature offers the transparent and dynamic sharing of data between multiple Java Virtual Machines (JVMs). When enabled, JVMs use shared memory to obtain and store data, including information about: loaded classes, Ahead-Of-Time (AOT) compiled code, commonly used UTF-8 strings, and Java Archive (JAR) file indexes.
+
+When you start up your JVM, it performs multiple steps to prepare the environment for execution, which includes bytecode loading, verification, linking and initialzing of core classes and interfaces. It also includes method area and constant pools.
+
+These sets of core classes and interfaces don't change that frequently unless you update your JVM. So, why we should perform all thoe steps every time we restart the JVM.
+
+What if we could simply dump the results of those steps to a file, which could be read by your JVM at startup. This allows environment to be up and running without performing those intermediate steps of loading, verification, and initialzation.
+
+Welcome to the land of Class Data Sharing (CDS).
+
+#### Location of the
+
+JVM by default creates the class data-sharing file with the name classes.jsa. The default location of classes.jsa mentioned below:
+
+1. Solaris/macOS/Linux: /lib/[arch]/server/classes.jsa
+1. Windows platforms: /bin/server/classes.jsa (refer following screenshot)
+
+[SharedArchiveLocation.png]
+
+
+### Creating a shared archive with CDS
+
+When JVM's metadata is shared among multiple processes, it results in a smaller memory footprint. We all know that loading data from the cache is faster than loading it from the disk.
+
+By default, JDK installation process creates the class data sharing file with the name **classes.jsa**. Java also allows us to create the shared archive at runtimeby using the following command.
+
+					java -Xshare:dump
+
+If the file is already created, running above command will simply result in overriding of the existing file.
+
+Java provides three options to control the usage of shared archive (classes.jsa).
+
+  - java -Xshare:off -> Disables Class Data Sharing
+  - java -Xshare:on -> Enables Class Data Sharing
+  - java -Xshare:auto -> This is default mode and it enables the CDS whenever possible.
+  
+As we have now basic understanding of what and why we need CDS, lets dig into Application CDS.
+
+### Introduction to AppCDS
+
+> Simply put, App CDS extends the advantages of the CDS to application level i.e user defined classes, allowing us to put application classes inside shared archive along with core classes.
+
+This drmatically reduces the stress of class loading, verification and linking, leading to a decreased startup time. Java even goes further, by allowing multiple JVMS to share the same **"classes.jsa"** file to even further reduce the memory footprint. From Java 11, AppCDS is automatically enabled with OpenJDK 64-bit systems. This feature allows application classes to be placed in a shared drive. 
+
+The common class metadata is shared across different Java processes. AppCDS allows the built-in system class loader, built-in platform class loader, and custom class loaders to load the archived classes. When multiple JVMs share the same archive file, memory is saved and the overall system response time improves.
+
+
+### Generating and using a shared application archive file
+
+In order to generate a shared archive specifying the application classes to be included. Even though your application contains numerous classes, you need not inlcude all of them into the shared archive because not all of them will be required at startup. This further reduces the size of the shared archive file.
+
+Let's look at an example, to start with, create a jar file of your application.
+
+
+```java
+
+// Vehicle.java 
+
+package com.app.my.cds;
+public class Vehicle {}
+
+// ElectricVehicle.java 
+
+package com.app.my.cds;
+public class ElectricVehicle extends Vehicle {}
+
+// Ship.java 
+
+package com.app.my.cds;
+public class Ship {}
+
+// Airplane.java 
+
+package com.app.my.cds;
+public class Airplane {}
+
+```
+Below is our main class, which is not part of the same package as previous classes. However it uses Vehicle and its subtype ElectricVehicle.
+
+```java
+
+
+// Main Class
+
+import com.app.my.cds.*;
+
+public class MyCDS {
+
+	public static void main(String args[]){
+		Vehicle vehicle = new ElectricVehicle();
+		vehicle.drive();
+		vehicle.steer();
+		vehicle.break();
+	}
+}
+
+```
+
+#### Determining the classes to be archived
+
+Now once you have a jar created for those classes, run following command to determine application classes that should be inlcuded in the shared archive.
+
+				java -Xshare:off
+					 -XX:DumpLoadedClassList=myAppCDS.lst
+					 -cp appcds.jar
+					  MyCDS
+
+If you open the list of file, you may notice that not all the application classes are being placed inside shared archive. If you revisit the code of **MyCDS.java**, you'll notice that it using two classes Vehicle and ElectricVehicle respectivvely. Hence only those application classes along with several other library classes can be seen in **myAppCDS.lst**.
+
+If you want to load other specific classes, you'll to have use them in your application. Now let's see how can we create the shared archive.
+
+#### Creating an application shared archive file
+
+In order to create a shared archive file including application classes, you can execute the following command. If you are using Java 12, you can skip using the **-XX:+UseAppCDS** option as it is automatically enabled.
+
+
+				java -Xshare:dump
+					 -XX:+UseAppCDS
+					 -XX:SharedClassListFile=myAppCDS.lst
+					 -XX:SharedClassListFile=myAppCDS.jsa
+					 -cp appcds.jar
+					 
+					 
+#### Using an application shared archive file
+
+To use a your application shared archive file(**myAppCDS.jsa**) execute the following command.
+
+				java -Xshare:on
+					 -XX:+UseAppCDS
+					 -XX:SharedArchiveFile=myAppCDS.jsa
+					 -cp appcds.jar
+					 MyCDS
+
+Similary, we can even share the .jsa file between JVMs for a reduced memory footprint. This results in reduced startup time of user application.
+					 
+### Parting Thoughts
+  - You have learned that using Application Class Data Sharing, memory footprint can be reduced drastically.
+  - We walked through the process of identifying the application classes to be placed in shared application archive file, creating the file and using it.
+  - In cloud era, where you pay by the amount of processing power, memory utilized by your application, feature such as Application CDS comes really handy to reduce the memory footprint.
+
+Hope you find this article useful. Please share your thoughts in the comment section.
+
+I’d be happy to talk! If you liked this post, please share, comment and give few 👏 😊 Cheers. See you next time.
