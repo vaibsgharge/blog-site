@@ -1,0 +1,282 @@
+---
+date: "2019-04-06"
+title: "The Complete Guide to Destructuring in JavaScript"
+categories:
+  - JavaScript
+---
+
+![The Complete Guide to Destructuring in JavaScript](./Intro_Picture.jpg)
+
+Object and array literals are two of the most frequently used notations in JavaScript, and thanks to the popular JSON data format, they have become a particularly
+an important part of the language.
+
+The goal of this article is to define and clarify the different aspects of **“Destructuring in JavaScript”**.
+
+Lets take a closer look at,
+  - **What and Why of Destructuring?**
+  - **Array Destructuring**
+  - **Object Destructuring**
+  - **Parting Thoughts**
+
+### What and Why of Destructuring?
+
+> Destructuring is an elegant way to extract data from arrays and objects.
+
+ECMAScript 6 simplifies the task of systematically pulling out relevant pieces of information from structures such as arrays and objects by adding destructuring, which is the nothing but a **process of breaking down a data structure into smaller parts**.
+
+The need to fetch information from objects and arrays could result in a lot of duplicate code to get certain data into local variables.
+
+For example:
+
+###### before-destructuring.js
+
+```javascript
+
+let userDetails = {
+    userHasSubscribed: true,
+    userLoggedIn: false
+};
+
+// extract values from the object
+
+let userHasSubscribed = userDetails.userHasSubscribed,
+let userLoggedIn = userDetails.userLoggedIn;
+
+```
+As you can see, this piece of code extracts the values of **userHasSubscribed** and **userLoggedIn** from the **userDetails** object, and stores that data in local variables with the same names in order to be used further.
+
+What if you had a large number of variables to assign, you would have to assign them all one by one. Even the worst thing is that if you have nested data structure, where you might have to dig through the entire structure just to find one piece of data.
+
+That’s the sole purpose why ES6 has added **Destructuring** for objects and arrays. When you break down a data structure into smaller parts, getting the information
+you need from it becomes much easier.
+
+The notation takes a bit of getting used to, but soon you’ll be quite comfortable making use of it in your own code.
+
+### Array Destructuring*
+
+In a typical javascript application, functions usually return a single value: a primitive or an object. There is no elegant way to return multiple values other than returning an array.
+
+That makes the code within function easy to comprehend, but on the receiving end, it is much messier to handle. 
+
+Let’s take a look at an example.
+
+###### array-destructuring.js
+
+```javascript
+
+const getUserNameById = function(id) {
+    return ['Kent', 'Bob', 'Victor'];
+};
+
+
+const userNamById = getUserNameById('@kent_Victor');
+
+const userFirstName = userNamById[0];
+const userMiddleName = userNamById[1]
+const userLastName = userNamById[2];
+
+```
+
+The function getUserNameById() returns the first name, the middle name, and the last name for a user at a given userId.
+
+Wouldn't it be nice to assign the result to variables like firstName and lastName directly? without having to use the index operator.
+
+That's what exactly Destructuring makes possible.
+
+###### array-destructuring.js
+
+```javascript
+
+let [firstName, middleName, lastName] = getUserNameById('@kent_Victor');
+
+```
+As you have seen, we do not need to fetch values from an array based on index. Moreover, allowing us to assign the values straight away to the variables: 
+firstName, middleName and lastName.
+
+#### Different ways of extracting values
+
+##### Fewer values
+
+If we want only the first name and not the other details, we would gently extract only the first name, like so:
+
+```javascript
+
+let [firstName] = getUserNameById('@kent_Victor');
+
+```
+
+##### Ignoring values
+
+We can even ignore the middle name and extract only the first and last names like this:
+
+```javascript
+
+let [firstName, , lastName] = getUserNameById('@kent_Victor'); // Extract only firstName and lastName
+
+let [, , lastName] = getUserNameById('@kent_Victor');// Extract only lastName
+
+```
+
+As you have seen examples of extracting all the values and also extracting fewer values than available. However, JavaScript even allows us to extract more values than what's available in the array.
+
+##### Extracting more than what's available
+
+```javascript
+
+let [firstName, , lastName, userName] = getUserNameById('@kent_Victor'); // Extract only firstName, lastName and userName with value 'undefined'
+
+```
+
+
+##### Using Rest Operator to Extract Values
+
+If we need to use just one or more variables but don’t want to lose the rest of the values, we can gather them into an array using the ... rest operator.
+
+```javascript
+
+// Extract only firstName and variable otherName will contain remaining values from the array.
+
+let [firstName, ...otherName] = getUserNameById('@kent_Victor'); 
+
+```
+
+##### Passing default values
+
+As you can see, there is no destructuring for userName variable as there is no 4th value available inside array. However, we can assign a default value to userName.
+
+```javascript
+
+// Extract firstName, middleName, lastName along with userName with default value.
+
+let [firstName, middleName, lastName, userName = "Kent Victor"] = getUserNameById('@kent_Victor');
+
+```
+
+### Object Destructuring
+
+Object destructuring provides an elegant way to extract data from objects into variables in local or lexical scope.
+
+Let’s extract the data from an object using non-destructuring way first and then see how object destructuring makes things easier. 
+
+Using a similar example as previously, let's just convert the array to an object that holds the details of a user.
+
+###### object-destructuring.js
+
+```javascript
+
+let userDetails = {
+    firstName: 'Kent',
+    middleName: 'Bob',
+    lastName: 'Victor',
+    address: { street: '909 Holly St.'}
+} 
+
+const firstNameOfUser = userDetails.firstName;
+const middleNameOfUser = userDetails.middleName;
+const lastNameOfUser = userDetails.lastName;
+
+```
+As you can see, we just need to extract the user's first name, middle name, and last name. But that took a couple of lines and an invocation of the dot notation—that’s rather verbose. 
+
+Destructuring can reduce a lot of that unwanted code.
+
+###### object-destructuring.js
+
+```javascript
+
+let userDetails = {
+    firstName: 'Kent',
+    middleName: 'Bob',
+    lastName: 'Victor',
+    address: { street: '909 Holly St.'}
+} 
+
+const { firstName: firstNameOfUser, middleName: middleNameOfUser , lastName: lastNameOfUser } = userDetails;
+
+```
+
+##### Extracting to Variables with the Same Name
+
+```javascript
+
+const { firstName, middleName, lastName} = userDetails;
+
+```
+
+##### Assigning Default Values
+
+When extracting, if a property we wanted does not exist in the object, we can assign a default value for the missing property.
+
+```javascript
+
+const { firstName, middleName, lastName, age = 25} = userDetails; // age will be assigned with default value of 25
+
+```
+##### Extracting When Passing Object to a Function
+
+Let’s create a function that receives the user object and logs the first name, middle name, and last name.
+
+```javascript
+
+const logInfo = function(userDetails) {
+    console.log(`${userDetails.firstName} ${userDetails.middleName} ${userDetails.lastName}`);
+};
+
+logInfo(userDetails);
+
+```
+This is a traditional way of handling object parameters to a function.
+
+Using the object destructuring syntax, we can straightaway declare parameter with object value extraction. Let’s rewrite the logInfo() function to use object destructuring.
+
+```javascript
+
+const logInfo = function({ firstName, middleName, lastName}) {
+    console.log(`${firstName} ${middleName} ${lastName}`);
+};
+
+logInfo(userDetails);
+
+```
+
+##### Nested Object Destructuring
+
+So far in the examples, we extracted the top-level properties of objects. The destructuring syntax makes it easy to extract properties in lower levels or embedded objects as well. Let’s extract the street property of the address embedded object in userDetails.
+
+```javascript
+
+const { firstName, address: { street } } = userDetails;
+
+```
+
+As we saw before, the firstName property, which is a top-level property, is extracted. Besides, the street property that is nested within the address property is also being
+extracted.
+
+As we can see, these changes allow us to extract properties of the nested object then we can access firstName and street, but any attempt to access the address object will result in a “variable not defined” error.
+
+
+##### Extracting into Existing Variables
+
+So far, we’ve extracted properties from objects into new variables, which are defined using const or let. However, We are not limited to extracting into new variables. We can even destructure an object and assign it to existing variables in local or lexical scope.
+
+```javascript
+
+let firstNameOfUser = 'NA';
+let lastNameOfUser = 'NA';
+
+({ firstName : firstNameOfUser,  lastName : lastNameOfUser } = userDetails);
+
+```
+
+To avoid **SyntaxError: Unexpected token =**, All we've to wrap the extraction code inside a pair of (). The semicolon should be outside the ().
+
+### Parting Thoughts
+
+  - You have learned that Destructuring makes working with objects and arrays in JavaScript a lot easier.
+  - You'll end up using JavaScript's destructuring many a times, a great feature of the language, makes extracting data from arrays and objects pretty darn easy.
+  - You have seen that both object and array destructuring can specify default values for any property or item that is undefined, and both throw errors when the right side of an assignment evaluates to null or undefined.
+
+
+Hope you find this article useful. Please share your thoughts in the comment section.
+
+I’d be happy to talk! If you liked this post, please share, comment and give a few ❤️ 😊 Cheers. See you next time.
