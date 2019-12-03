@@ -1,0 +1,252 @@
+---
+date: "2019-04-20"
+title: "Deep Dive Angular: What are the Angular Reactive Forms?"
+categories:
+  - Angular
+---
+
+![Deep Dive Angular: What are the Angular Reactive Forms?](./Intro_Picture.png)
+
+
+Angular offers rich support for handling forms. It goes beyond regular data-binding by treating form fields as first-class citizens and providing fine-grained control over form data.
+
+If you’re familiar with Angular in general and forms in particular, you probably know that there are two different ways to manage forms with Angular : template-driven and reactive.
+
+These two approaches are exposed as two different APIs (sets of directives and TypeScript classes) in Angular. We are interested in understanding the reactive approach.
+
+So Let's explore,
+
+  - **An angular App is a Reactive App**
+  - **Understanding Building Blocks of Angular Forms API (FormControl, FormGroup, AbstractControl, FormArray, FormBuilder)**
+  - **Watching changes to the state and being Reactive**
+  - **Implementing Reactive Form using FormGroup and FormControl**
+  - **Key Differences Between Reactive Forms and Template-Driven Forms**
+  - **Parting Thoughts**
+  
+### An angular App is a Reactive App
+
+The term, **“reactive,”** is a general programming term that is focused on creating responsive (fast) event-driven applications, UI controllers reacting to mouse events, where an observable event stream is pushed to subscribers.
+
+In short, **non-blocking** is reactive, because, instead of being blocked, we are now in the mode of reacting to notifications as operations complete or data becomes available.
+
+> One of the most important characteristics of Reactive Programming is that it allows us to implement the **Push Model** of data processing.
+
+> In contrast, the **Pull Model** is implemented by looping through an array, by an Iterable, or by using ES6 generator functions.
+
+To get in-depth understanding of reactive programming paradigm, head over to my another post 
+[Reactive Programming - The best idea from Observer pattern, the Iterator pattern and Functional programming](https://blog.vaibhavgharge.com/reactive-programming-the-best-idea-from-observer-pattern-the-iterator-pattern-and-functional-programming "**Reactive Programming - The best idea from Observer pattern, the Iterator pattern and Functional programming**")
+
+![Deep Dive Angular: What are the Angular Reactive Forms?](./Angular_Observables.png)
+
+### Working with Forms (FormControl, FormGroup, AbstractControl, FormArray, FormBuilder)
+
+Let’s break it down.
+
+##### Creating a FormControl
+
+> FormControl is a class that powers an individual form control, tracks the value and validation status, whilst offering a wide set of public API methods. Represents a single input field - it is the smallest unit of an Angular form.
+
+Let's consider an example where we are setting up the Reactive form using the form model FormControl instance.
+
+```html
+
+<input type="text" name="userInput" pInputText formControlName="userInput"  maxlength="10">
+
+```
+
+```typescript
+
+FormControl someFormControlOne = new FormControl(formState, validatorOrOpts, asyncValidator);
+    
+```
+Where,
+  - formState -> Initializes the control with an initial value or an object that defines the initial value and disabled state.
+  - validatorOrOpts -> A synchronous validator function, or an array of such functions.
+  - asyncValidator -> A single async validator or array of async validator functions.
+    
+Each form field should have a **_formControlName_** directive in the template with a value that will be the name used in the component class for referring to that field.
+
+There are four possible validation status values for a FormControl:
+
+  - **VALID: This control has passed all validation checks.
+  - **INVALID: This control has failed at least one validation check.
+  - **PENDING: This control is in the midst of conducting a validation check.
+  - **DISABLED: This control is exempt from validation checks.
+
+These status values are mutually exclusive, so control cannot be both valid and invalid or invalid and disabled at the same time.
+
+##### Creating a FormGroup
+
+Most forms have more than one field, so we need a way to manage multiple FormControls. That's what exactly **FormGroup** provides. It usually represents a part of the form and is a collection of **FormControls**. FormGroup aggregates the values and the statuses of each FormControl in the group. If one of the controls in a group is invalid, the entire group becomes invalid. It’s convenient for managing related fields on the form.
+
+Here's how you create a FormGroup: 
+
+```typescript
+
+this.someFormGroup = new FormGroup({
+        someFormControlOne: new FormControl('', []),
+        someFormControlTwo: new FormControl('', [])
+    });
+    
+```
+
+##### What's inside AbstractControl?
+
+Both the FormGroup and FormControl inherit from AbstractControl, which has lots of interesting properties, that allows Angular to render the UI differently, based on the status of FormControl.
+
+  - dirty: A control is **dirty** If the user has changed the value in the UI.
+  - touched: A control is marked **touched** once the user has triggered a `blur` event on it.
+  - untouched: A control is **untouched** If the user has not yet triggered a `blur` event on it.
+  - valueChanges: A multicasting observable that emits an event every time the **value** of the control changes, in the UI or programmatically.
+  - statusChanges: A multicasting observable that emits an event every time the validation **status** of the control recalculates.
+
+##### Using FormArray
+
+**FormArray** is similar to FormGroup, but it has a variable length. Whereas FormGroup represents an entire form or a fixed subset of a form’s fields, FormArray 
+usually represents a growable collection of fields.
+
+In short, we can use FormArray to create a form of variable or unknown length. Let us assume that we need to create an account registration form, which will have two fields for an bankAccountType and a bankAccountCode.
+
+```typescript
+
+// FormArray can contain both FormGroup and FormControl.
+
+this.formArrays = new FormArray([
+                        new FormGroup({
+                            bankAccountType: new FormControl('', [Validators.required]),
+                            bankAccountCode: new FormControl('', [Validators.required])
+                        }),
+                        interestType: new FormControl('Simple', []),
+                ])
+```
+
+##### Declarative approach with FormBuilder
+
+The FormBuilder class provides a simpler API to deal with control groups.
+
+FormBuilder is part of **ReactiveFormsModule**, to use you will need to inject FormBuilder instance in your component. In Angular, the simplest way to accomplish this is by listing it as a typed constructor parameter.
+
+```typescript
+
+export class LoginComponent implements OnInit {
+
+    constructor(
+    private formBuilder: FormBuilder // FormBuilder instance created and set by Angular, through a technique called Dependency Injection.
+    ) { }
+
+    ngOnInit() {
+        this.loginForm = this.formBuilder.group({
+          usernameString: ['', Validators.required], // note that we no more need to use FormControl specifically.
+          passwordString: ['', Validators.required]
+        });
+  }
+}
+
+```
+
+To get in-depth understanding of declarative programming paradigm, head over to my another post [Imperative vs Declarative programming. Your enemy is not object-oriented programming](https://blog.vaibhavgharge.com/imperative-vs-declarative-programming-your-enemy-is-not-object-oriented-programming"**Imperative vs Declarative programming. Your enemy is not object-oriented programming**")
+
+### Watching State Changes and Being Reactive
+
+Let's see a simple demonstration of how we can use **valueChanges** Observable. So every time the user enters the userName, it will be checked for availability with backend.
+
+```typescript
+
+this.sampleForm.get('userName').valueChanges.subscribe(
+            (userName) => {
+                userService.validateUserName(userName);
+            }
+         );
+
+```
+
+Ideally, we shouldn't be invoking backend calls for every letter user typed. Hence the RxJS operator like _debounce_ comes in handy for such scenarios, which deserves a post on its own.
+
+### Implementing Reactive Form using FormGroup and FormControl.
+
+```html
+
+<form [formGroup]="bankDetailsForm">
+    <div>
+       "Bank Code"
+       <div>
+          <input type="text" name="bankCode" pInputText formControlName="bankCode"  maxlength="4">
+       </div>
+       "Bank Account No"
+       <div>
+          <input type="text" name="bankAccountNo" pInputText formControlName="bankAccountNo"  maxlength="20">
+       </div>
+    </div>
+</form>
+
+```
+
+```typescript
+
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'display-bank-account-details',
+  templateUrl: './display-bank-account-details.component.html',
+  styleUrls: ['./display-bank-account-details.component.css']
+})
+export class DisplayBankAccountDetailsComponent implements OnInit {
+
+  constructor(private formBuilder: FormBuilder) {}
+  bankDetailsForm: FormGroup;
+  
+  initFormControls(): void {
+    this.bankDetailsForm = new FormGroup({
+        bankCode: new FormControl('', [Validators.required]), // Creates new FormControl instance which will be tracked by Angular.
+        bankAccountNo: new FormControl('', [Validators.required]) // Creates new FormControl instance which will be tracked by Angular.
+    });
+  }
+  
+  init(): void {
+    this.initFormControls();
+  }
+  
+  ngOnInit() {
+    this.init();
+  }
+}
+
+```
+
+To enable reactive forms, add ReactiveFormsModule from **@angular/forms** to the imports list of the **NgModule** that uses the Forms API.
+
+```typescript
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { ReactiveFormsModule } from '@angular/forms';
+
+@NgModule({
+    imports : [ BrowserModule, FormsModule, ReactiveFormsModule ],
+    declarations: [ AppComponent ],
+    bootstrap : [ AppComponent ]
+})
+
+class AppModule {}
+platformBrowserDynamic().bootstrapModule(AppModule);
+
+```
+
+### Key Differences Between Reactive Forms and Template-Driven Forms
+
+1. Reactive forms are synchronous in nature, whereas template-driven forms are asynchronous.
+1. The data model in reactive forms is more structured than template-driven forms.
+1. Form validations in reactive forms are handled through functions, whereas in template-driven forms they are handled through directives.
+1. Reactive forms are immutable in nature, whereas template-driven forms are mutable.
+1. Reactive forms are more explicit and created in the component class and template-driven forms are less explicit and created by directives.
+
+### Parting Thoughts
+
+  - You have learned what a Reactive approach is — An object that emits or publishes values over time and asynchronously. In a reactive approach, you create the form model programmatically in the code (in TypeScript, in this case). The template can be either statically defined and bound to an existing form model or dynamically generated based on the model.
+  - Forms have a lot of moving parts, but Angular makes it fairly straightforward. Once you get a handle on how to use FormGroups, FormControls, and Validations, it's pretty easy going from there!
+ 
+Hope you find this post useful. Please share your thoughts in the comment section.
+
+I’d be happy to talk! If you liked this post, please share, comment and give a few ❤️ 😊 Cheers. See you next time.
