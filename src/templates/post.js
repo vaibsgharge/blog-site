@@ -94,7 +94,7 @@ const Post = ({ pageContext: { slug, prev, next }, data: { mdx: postNode } }) =>
           </Link>
           <br />
           <br />
-          <div>Sign up for the newsletter to get interesting articles.</div>
+          <div>Keep me updated about software engineering stuff</div>
         </Content>
       </Wrapper>
     </Layout>
