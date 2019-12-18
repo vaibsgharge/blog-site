@@ -1,11 +1,11 @@
 ---
 date: "2019-02-02"
-title: "Reactive Programming - The Best of Observer Pattern and Iterator Pattern"
+title: "Reactive Programming - The best idea from Observer Pattern and Iterator Pattern"
 categories:
   - Programming Paradigms
 ---
 
-![Reactive Programming - The Best of Observer Pattern and Iterator Pattern](./Intro_Picture.png)
+![Reactive Programming - The best idea from Observer Pattern and Iterator Pattern](./Intro_Picture.png)
 
 Before we start on the Reactive Programming Paradigm let's have a brief introduction to programming paradigms in general. 
 
@@ -54,14 +54,14 @@ is going to receive data.
 
 Any collection at the minimum needs to provide clients APIs to add and remove elements from it. But more importantly, it needs to allow clients to traverse through the elements it stores.
 
-![Reactive Programming - The Best of Observer Pattern and Iterator Pattern](./Iterator_Pattern.jpg)
+![Reactive Programming - The best idea from Observer Pattern and Iterator Pattern](./Iterator_Pattern.jpg)
 
 
 #### A Quick Look at Observer Pattern
 
 > The Observer pattern lets a number of observers get notified when something changes in a subject that they are observing.
 
-![Reactive Programming - The Best of Observer Pattern and Iterator Pattern](./Observer_Pattern.png)
+![Reactive Programming - The best idea from Observer Pattern and Iterator Pattern](./Observer_Pattern.png)
 
 The observer pattern was pretty good for things like UI events and the Iterator pattern was really good for traversing all types of different collections in a consistent way. But one thing they missed was the correspondence between these two patterns.
 
@@ -83,7 +83,7 @@ When one component is struggling to keep-up, the system as a whole needs to resp
 
 Since it can’t cope and it can’t fail it should communicate the fact that it is under stress to upstream components and so get them to reduce the load. This back-pressure is an important feedback mechanism that allows systems to gracefully respond to load rather than collapse under it.
 
-![Reactive Programming - The Best of Observer Pattern and Iterator Pattern](./Back_Pressure.png)
+![Reactive Programming - The best idea from Observer Pattern and Iterator Pattern](./Back_Pressure.png)
 
 Backpressure doesn’t make the problem of an overproducing Observable or an underconsuming Subscriber go away. It just moves the problem up the chain of operators 
 to a point where it can be handled better.
