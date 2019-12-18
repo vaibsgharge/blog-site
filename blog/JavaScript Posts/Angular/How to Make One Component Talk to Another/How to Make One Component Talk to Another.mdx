@@ -232,7 +232,7 @@ You’ve learned how a parent component can pass data to its child using binding
 
 But there are other cases when passing data between components that have no direct connection, such as siblings, grandchildren, etc, you should use a **shared service** approach.
 
-When you have data that should always be in sync, RxJS **`BehaviorSubject`** comes handy in this situation. The major advantage that a BehaviorSubject ensures that every component consuming the service receives the most recent data. If you would like to know more about Subjects in RxJS head over to my article on [Reactive Programming - The best idea from Observer pattern, the Iterator pattern and Functional programming](https://blog.vaibhavgharge.com/reactive-programming-the-best-idea-from-observer-pattern-the-iterator-pattern-and-functional-programming "**Reactive Programming - The best idea from Observer pattern, the Iterator pattern and Functional programming**").
+When you have data that should always be in sync, RxJS **`BehaviorSubject`** comes handy in this situation. The major advantage that a BehaviorSubject ensures that every component consuming the service receives the most recent data. If you would like to know more about Subjects in RxJS head over to my article on [Reactive Programming - The best idea from Observer pattern, the Iterator pattern and Functional programming](https://blog.vaibhavgharge.com/reactive-programming-the-best-idea-from-observer-pattern-and-iterator-pattern "**Reactive Programming - The best idea from Observer Pattern and Iterator Pattern**").
 
 So in the service, we need to create a private BehaviorSubject that will hold the current value of the message. 
 
