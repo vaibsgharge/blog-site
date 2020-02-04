@@ -204,7 +204,7 @@ const Layout = ({ children, customSEO }) => {
         <GlobalStyle />
         {children}
         <Footer>
-          &copy; 2019 by Vaibhav Gharge. All rights reserved. <br />
+          &copy; 2020 by Vaibhav Gharge. All rights reserved. <br />
         </Footer>
       </>
     </ThemeProvider>
