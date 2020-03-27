@@ -1,0 +1,110 @@
+---
+date: "2020-03-08"
+title: "Understanding Leader Election Alogrithms in Distributed Systems"
+categories:
+  - Distributed Systems
+---
+
+![Understanding Leader Election Alogrithms in Distributed Systems](./Leader-1.jpg)
+
+> Leader Election is a vital and fundamental problem in distributed systems and in any communication network. Distributed Systems is a collection of heterogeneous systems that interact with each other through messages. The main objective of **Distributed System** is, though there are heterogeneous systems in the network, it creates a single system image or uniprocessor image to the user acting Synchronously.
+
+The goal of this article is to define and clarify the different aspects of **“Leader Election Algorithms in Distributed Systems”**.
+
+### 1. Introduction
+
+Cloud computing systems today, whether open-source or used inside companies, are built using a common set of core techniques, algorithms, and design philosophies – all centered around distributed systems. Leader election is a common part of distributed systems. For instance, we may consider a distributed database where all the nodes need to reach the commit consensus for synchronization purposes.
+
+Synchronization can be quite costly: if each algorithm step involves contacting each other participant, we can end up with a significant communication overhead. 
+This is particularly true in large and geographically distributed systems. To reduce synchronization overhead and the number of message round-trips required to reach a decision, some algorithms rely on the existence of the leader(sometimes called coordinator/master) process, responsible for executing or coordinating steps of a distributed algorithm.
+
+> Leader election is the fairly simple idea of giving (a process, host, thread, object, or human) in a distributed system some special powers. Those special powers could include the ability to assign work, the ability to modify a piece of data, or even the responsibility of handling all requests in the system and keeping all the nodes having distributed data in sync.
+
+### 2. Why Use a Leader?
+
+A distributed system having a node designated as a leader is actually quite similar to the keyword synchronized in Java. The classic example for Java synchronized is when two threads attempt to increment the same integer. For instance, when two threads attempt to deposit $100 each to the same account.
+
+Each thread has to read the balance, increment it and write it back. Given a starting balance of $100 and no thread synchronization the following may occur:
+
+Thread A reads balance ($100)
+Thread B reads balance ($100)
+Thread A calculates new balance ($200)
+Thread B calculates new balance ($200)
+Thread A writes a new balance ($200)
+Thread B writes a new balance ($200)
+
+Clearly, the account started with $100, a total of $200 was deposited, and the final balance should have been $300. However, thread A’s deposit is overwritten as thread B has done its calculation on data that is stale by the time it writes its updated balance.
+
+The solution in Java is of course to use the keyword synchronized on the code doing the incrementation and it will make one thread finish its work with the balance before the other gets to read the balance.
+
+If you consider a thread as a node, it’s easy to imagine the same problem in a distributed system, but there is no synchronized keyword to the rescue. 
+
+As we know, synchronized functionality in java is backed by the underlying operating system using monitors. This means that only one thread may be inside the monitor at any given time. When a thread requests the monitor and the monitor is available, it is allowed to enter instantly. If the monitor is occupied, the thread is put in the waiting pool and suspended until the monitor is released.
+
+Even though leader election and distributed locking (i.e., exclusive ownership over a shared resource) might look alike from a theoretical perspective, they are slightly different. If one process holds a lock for executing a critical section, it is unimportant for other processes to know who exactly is holding a lock right now, as long as the liveness 
+property is satisfied.
+
+Having a stable leader in the system helps to avoid state synchronization between remote participants, reduce the number of exchanged messages, and drive execution from a single process instead of requiring peer-to-peer coordination. One of the potential problems in systems with a notion of leadership is that the leader can become a bottleneck. 
+
+To overcome that, many systems partition data in non-intersecting independent replica sets (**“Database Partitioning”**). Instead of having a single system-wide leader, each replica set has its own leader. One of the systems that use this approach is Google's Spanner (**“Distributed Transactions with Spanner”**).
+
+### 3. Avoid Split Brain
+
+A fundamental problem in distributed systems is that network partitions (split brain scenarios) and machine crashes are indistinguishable for the observer, i.e. a node can observe that there is a problem with another node, but it cannot tell if it has crashed and will never be available again or if there is a network issue that might or might not heal again after a while. Temporary and permanent failures are indistinguishable because decisions must be made in finite time, and there always exists a temporary failure that lasts longer than the time limit for the decision.
+
+Split brain indicates data or availability inconsistencies originating from the maintenance of two separate data sets with overlap in scope. Having split brain can lead to serious, unrecoverable errors. 
+
+Fortunately, most distributed systems, when configured properly, is designed to prevent split brain from happening in the first place. They typically comes in 3 forms.
+
+  - A master node which gets to make all final decisions (this however may cause a single point of failure of a master node going down. Some systems fallback to voting a new master node if it occurs).
+
+  - Hard system failure to prevent such split brain. Until the cluster is all synced back up properly; This ensures that no "outdated" data is shown.
+
+  - Locking the system in readonly; The most common sign of this would be when certain nodes show outdated data, in read-only mode.
+
+### 2. The good and bad parts of leader election
+
+Leader election is a common pattern in distributed systems because it has some significant advantages:
+
+  - Writing software for a single leader may be easier than other approaches like quorum. The single leader doesn’t need to consider that other systems may be working on the same state at the same time.
+
+  - A single leader makes systems easier for humans to think about. It puts all the concurrency in the system into a single place, reduces partial failure modes, and adds a single place to look for logs and metrics.
+
+  - Single leaders can easily offer clients consistency because they can see and control all the changes made to the state of the system.
+
+  - A single leader can improve performance or reduce cost by providing a single consistent cache of data that can be used every time.
+
+  - A single leader can work more efficiently. It can often simply inform other systems about changes, rather than building consensus about the changes to be made.
+
+Leader election also has some considerable disadvantages:
+
+  - A leader is a single point of trust. If a leader is doing the wrong work with nobody checking it, it can quickly cause problems across the entire system. 
+
+  - A single node is a single point of failure. If the system fails to detect or fix a bad leader, the whole system can go down.
+
+  - Partial deployments may be hard to apply in leader-elected systems. Many software safety practices at Amazon depend on partial deployments, such as one-box, A-B testing, blue/green deployment, and incremental deployment with automatic rollback.
+
+  - A single leader means a single point of scaling, both in data size and request rate. When a leader-elected system needs to grow beyond a single leader, it requires a complete re-architecture.
+  
+### Wrapping Up
+
+Election algorithms are meant for electing a coordinator process from among the currently running processes in such a manner that at any instance of time there is a single coordinator for all processes in the system.
+
+Election algorithms basically work on the following assumptions :
+
+1. Each process in the system has a unique priority number
+
+1. Whenever an election is held, the process having the highest priority number among the currently active processes is elected as the leader/ coordinator.
+
+1. On recovery, a failed process can take appropriate actions to rejoin the set of active processes.
+
+Various election algorithms do this in different ways. Two such election algorithms are: **The Bully Algorithm** and **The Ring Algorithm**. 
+We will explore those in an upcoming post. 
+
+Hope you find this article useful. Please share your thoughts in the comment section. I’d be happy to talk! 
+If you liked this post, please share, comment and give a few 👏 😊. Cheers See you next time.
+
+
+##### References
+  - [Britton2001] https://www.researchgate.net/publication/266560244_An_Improved_Leader_Election_Algorithm_for_Distributed_Systems
+  - [2] Tai Yun Kim,"A Leader Election Algorithm in a Distributed Computing System", Department of Computer Science, Korea University-1, Ga, Anam: Dong, Seoul, pp. 136-701, KOREA
