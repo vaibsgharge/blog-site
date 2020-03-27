@@ -7,13 +7,12 @@ categories:
 
 ![Understanding Why Leader Matters in Distributed Systems](./Leader-1.jpg)
 
-> Leader Election is a vital and fundamental problem in distributed systems and in any communication network. Distributed Systems is a collection of heterogeneous systems that interact with each other through messages. The main objective of **Distributed System** is, though there are heterogeneous systems in the network, it creates a single system image or uniprocessor image to the user acting Synchronously.
 
-The goal of this article is to define and clarify the different aspects of **“Leader Election Algorithms in Distributed Systems”**.
+> Leader Election is a vital and fundamental problem in distributed systems and in any communication network. Distributed Systems is a collection of heterogeneous systems that interact with each other through messages. The main objective of **Distributed System** is, though there are heterogeneous systems in the network, it creates a single system image or uniprocessor image to the user acting Synchronously.
 
 ### 1. Introduction
 
-Cloud computing systems today, whether open-source or used inside companies, are built using a common set of core techniques, algorithms, and design philosophies – all centered around distributed systems. Leader election is a common part of distributed systems. For instance, we may consider a distributed database where all the nodes need to reach the commit consensus for synchronization purposes.
+**Cloud computing** systems today, whether open-source or used inside companies, are built using a common set of core techniques, algorithms, and design philosophies – all centered around distributed systems. Leader election is a common part of distributed systems. For instance, we may consider a distributed database where all the nodes need to reach the commit consensus for synchronization purposes.
 
 Synchronization can be quite costly: if each algorithm step involves contacting each other participant, we can end up with a significant communication overhead. 
 This is particularly true in large and geographically distributed systems. To reduce synchronization overhead and the number of message round-trips required to reach a decision, some algorithms rely on the existence of the leader(sometimes called coordinator/master) process, responsible for executing or coordinating steps of a distributed algorithm.
@@ -26,14 +25,14 @@ A distributed system having a node designated as a leader is actually quite simi
 
 Each thread has to read the balance, increment it and write it back. Given a starting balance of $100 and no thread synchronization the following may occur:
 
-Thread A reads balance ($100)
-Thread B reads balance ($100)
-Thread A calculates new balance ($200)
-Thread B calculates new balance ($200)
-Thread A writes a new balance ($200)
-Thread B writes a new balance ($200)
+  - Thread A reads balance ($100)
+  - Thread B reads balance ($100)
+  - Thread A calculates new balance ($200)
+  - Thread B calculates new balance ($200)
+  - Thread A writes a new balance ($200)
+  - Thread B writes a new balance ($200)
 
-Clearly, the account started with $100, a total of $200 was deposited, and the final balance should have been $300. However, thread A’s deposit is overwritten as thread B has done its calculation on data that is stale by the time it writes its updated balance.
+Clearly, the account started with $100, a total of $200 was deposited, and the final balance should have been $300. However, **thread A’s** deposit is overwritten as thread B has done its calculation on data that is stale by the time it writes its updated balance.
 
 The solution in Java is of course to use the keyword synchronized on the code doing the incrementation and it will make one thread finish its work with the balance before the other gets to read the balance.
 
@@ -64,7 +63,7 @@ Fortunately, most distributed systems, when configured properly, is designed to 
 
 ### 2. The good and bad parts of leader election
 
-Leader election is a common pattern in distributed systems because it has some significant advantages:
+**Leader election is a common pattern in distributed systems because it has some significant advantages:**
 
   - Writing software for a single leader may be easier than other approaches like quorum. The single leader doesn’t need to consider that other systems may be working on the same state at the same time.
 
@@ -76,7 +75,7 @@ Leader election is a common pattern in distributed systems because it has some s
 
   - A single leader can work more efficiently. It can often simply inform other systems about changes, rather than building consensus about the changes to be made.
 
-Leader election also has some considerable disadvantages:
+**Leader election also has some considerable disadvantages:**
 
   - A leader is a single point of trust. If a leader is doing the wrong work with nobody checking it, it can quickly cause problems across the entire system. 
 
@@ -90,7 +89,7 @@ Leader election also has some considerable disadvantages:
 
 Election algorithms are meant for electing a coordinator process from among the currently running processes in such a manner that at any instance of time there is a single coordinator for all processes in the system.
 
-Election algorithms basically work on the following assumptions :
+Election algorithms basically work on the following assumptions:
 
 1. Each process in the system has a unique priority number
 
@@ -98,13 +97,6 @@ Election algorithms basically work on the following assumptions :
 
 1. On recovery, a failed process can take appropriate actions to rejoin the set of active processes.
 
-Various election algorithms do this in different ways. Two such election algorithms are: **The Bully Algorithm** and **The Ring Algorithm**. 
-We will explore those in an upcoming post. 
+Various election algorithms do this in different ways. Two such election algorithms are: **The Bully Algorithm** and **The Ring Algorithm**.  We will explore those in an upcoming post. 
 
-Hope you find this article useful. Please share your thoughts in the comment section. I’d be happy to talk! 
-If you liked this post, please share, comment and give a few 👏 😊. Cheers See you next time.
-
-
-##### References
-  - [Britton2001] https://www.researchgate.net/publication/266560244_An_Improved_Leader_Election_Algorithm_for_Distributed_Systems
-  - [2] Tai Yun Kim,"A Leader Election Algorithm in a Distributed Computing System", Department of Computer Science, Korea University-1, Ga, Anam: Dong, Seoul, pp. 136-701, KOREA
+Hope you find this article useful. Please share your thoughts in the comment section. I’d be happy to talk!  If you liked this post, please share😊. Cheers See you next time.
