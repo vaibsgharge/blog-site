@@ -1,0 +1,85 @@
+---
+date: "2020-04-05"
+title: "Stuff you should know about Indexing in Databases"
+categories:
+  - Databases
+---
+![Stuff you should know about Indexing in Databases](./Book-Indexs.jpg)
+
+> Structuring your data, and being able to perform more complex searches over it is a serious challenge. As the size of your data set grows from gigabytes to terabytes, it becomes increasingly difficult to find the data you are looking for efficiently. Any time you read, update, delete, or even insert new data, your applications and data stores need to perform searches to be able to locate the right rows that need to be read and written.
+
+To be able to understand better how to search through billions of records efficiently, you first need to get familiar with how indexes work.
+
+## Why you need an Index at first place
+
+When working with scalable websites, being able to index data efficiently is a critical skill. Even if you do not intend to be an expert in this field, you need to have a basic understanding of how indexes and searching work to be able to work with ever-growing data sets.
+
+Let's take a look at an example to understand how indexes and searching works. Let’s say that you had personal data of a billion users and you needed to search through it quickly. If the data set contained first names, last names, e-mail addresses, gender, date of birth, and an account number (user ID).
+
+
+| User ID 	| First Name | Last Name  	| E-mail  			| Gender  |
+|-----------|------------|--------------|-------------------|---------|
+| 135  		| John  	 | Smith		| john@email.com  	|   M	  |
+| 567  		| Yug  		 | Shah			| yug@email.com	  	|   F	  |
+| 10 		| Alain	 	 | Xi			| alain@email.com  	|   M	  |
+
+If your data was is not indexed in any way, you would not be able to quickly find users based on any criteria. The only way to find a user would be to scan the entire data set, row by row. If you had a billion users and wanted to check if a particular e-mail address exists in your database, you would need to perform up to a billion comparisons. 
+
+In the worst-case scenario, when a user was not in your data set, you would need to perform one billion comparisons (as you cannot be sure that user is not there until you check all of the rows).
+
+The term used for this type of search is called **A full table scan**, as you need to scan the entire data set to find the row that you are looking for. You'll have to load all of the data from the disk into memory to be able to perform comparisons and check if the row at hand is the one you are looking for. A full table scan is pretty much the worst-case
+scenario when it comes to searching, as it has O(n) cost.
+
+As full table scan has a linear cost, it is definately not an efficient way to search large data sets. That's where you need an index on the data that you are going to search upon.
+
+For example, if you wanted to search for users based on their e-mail address, you would create an index on the e-mail address field. In simpler terms, you can think of index as a lookup table just like a book index.
+
+## Important Properties of an Index
+
+There are two important properties of an index:
+
+1. An index is structured and sorted in a specific way, optimized for particular types of searches. For example, a book index can answer questions like “What pages refer to the term Indexing?” but it cannot answer questions like “What pages refer to more than one term?” Although both questions refer to locations of terms in the book, a book index is not optimized to answer the second question efficiently.
+
+1. The data set is reduced in size because the index is much smaller in size than the overall body of text so that the index can be loaded and processed faster. A 500-page book may have an index of just a few pages. That makes searching for terms faster, as there is less content to search through.
+
+The reason why most indexes are sorted is that searching through a sorted data set can be performed much faster than through an unsorted one.
+
+A good example of a simple and fast searching algorithm is the **binary search algorithm**. When using a binary search algorithm, you don’t scan the data set from the beginning to
+the end, but you “jump around,” skipping large numbers of items. The algorithm takes a range of sorted values and performs four simple steps until the value is
+found:
+
+1. You look at the middle item of the data set to see if the value is equal, greater to, or smaller than what you are searching for.
+1. If the value is equal, you found the item you were looking for.
+1. If the value is greater than what you are looking for, you continue searching through the smaller items. You go back to step 1 with the data set reduced by half.
+1. If the value is smaller than what you are looking for, you continue searching through the larger items. You go back to step 1 with the data set reduced by half.
+
+If you had a billion user IDs, you would only need to perform, on average, 30 comparisons to find what you are looking for! If you remember, a full table scan would take, on average, half a billion comparisons to locate a row. The binary search algorithm has a Big O notation cost of **O(log2n)**, which is much lower than the **O(n)** cost of a full table scan.
+
+## How to choose the field for Indexing
+
+Indexes are great for searching, but unfortunately, they add some overhead. Maintaining indexes requires you to keep additional data structures with sorted lists of items, and as the data set grows, these data structures can become large and costly. To make it even more expensive, indexing text fields like e-mail addresses takes more space because the data being indexed is “longer” than 8 bytes. On average, e-mail addresses are around 20 bytes long, making indexes even larger.
+
+Hence, it is important to know what data is worth indexing and what is not. To make these decisions, you need to look at the queries that you intend to perform on your data and the cardinality of each field.
+
+> Cardinality is a number of unique values stored in a particular field. Fields with high cardinality are good candidates for indexes, as they allow you to reduce the data set to a very small number of rows.
+
+let’s take a look at the example data set again. The following are all of the fields with estimated cardinality:
+
+  - **gender** : In most databases, there would be only two genders available, giving us very low cardinality (cardinality ~ 2). Although you can find databases with more genders (like transsexual male), the overall cardinality would still be very low (a few dozen at best).
+
+  - **first name** : Depending on the mixture of origins, you might have tens of thousands of unique first names (cardinality ~ tens of thousands).
+  
+  - **email address** : If e-mail addresses were used to uniquely identify accounts in your system, you would have cardinality equal to the total number of rows (cardinality = 1 billion). Even if you did not enforce e-mail address uniqueness, they would have few duplicates, giving you a very high cardinality.
+  
+  - **user id** : Since user IDs are unique, the cardinality would also be 1 billion (cardinality = 1 billion).
+
+The reason why low-cardinality fields are bad candidates for indexes is that they do not narrow down the search enough. After traversing the index, you still have a lot of rows left to inspect.
+
+  
+### Wrapping Up
+
+  - Understanding the indexing basics presented in this section is absolutely critical to being able to design and implement scalable web applications. In particular, if you want to use NoSQL data stores, you need to stop thinking of data as if it were stored in tables and think of it as if it were stored in indexes.
+    
+Hope you find this article useful. Please share your thoughts in the comment section.
+
+I’d be happy to talk! If you liked this post, please share 😊 Cheers. See you next time.
